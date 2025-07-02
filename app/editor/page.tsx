@@ -16,14 +16,32 @@ export default function EditorPage() {
   const [businessType, setBusinessType] = useState("")
   const [promotion, setPromotion] = useState("")
   const [generatedText, setGeneratedText] = useState("")
+  const [imagePrompt, setImagePrompt] = useState("")
+  const [generatedImageUrl, setGeneratedImageUrl] = useState("")
 
   const handleGenerateText = async () => {
     if (!businessType || !promotion) return
 
     setIsGeneratingText(true)
-    // Simulate AI text generation
-    setTimeout(() => {
-      setGeneratedText(`🔥 MEGA SALE ALERT! 🔥
+    try {
+      const response = await fetch("/api/generate-text", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          businessType,
+          promotion,
+          style: "promotional",
+        }),
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setGeneratedText(data.text)
+      } else {
+        // Fallback text if API fails
+        setGeneratedText(`🔥 MEGA SALE ALERT! 🔥
 
 Get ${promotion} at ${businessType}!
 
@@ -32,16 +50,49 @@ Get ${promotion} at ${businessType}!
 ✨ Call Now: +254 700 000 000
 
 Visit us today and save big!`)
+      }
+    } catch (error) {
+      console.error("Error generating text:", error)
+      // Fallback text
+      setGeneratedText(`🔥 SPECIAL OFFER! 🔥
+
+${promotion} at ${businessType}
+
+Don't miss out on this amazing deal!
+Contact us today!`)
+    } finally {
       setIsGeneratingText(false)
-    }, 2000)
+    }
   }
 
   const handleGenerateImage = async () => {
+    if (!imagePrompt) return
+
     setIsGeneratingImage(true)
-    // Simulate AI image generation
-    setTimeout(() => {
+    try {
+      const response = await fetch("/api/generate-image", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          prompt: imagePrompt,
+          style: "modern",
+          colors: "vibrant",
+        }),
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setGeneratedImageUrl(data.imageUrl)
+      } else {
+        console.error("Failed to generate image")
+      }
+    } catch (error) {
+      console.error("Error generating image:", error)
+    } finally {
       setIsGeneratingImage(false)
-    }, 3000)
+    }
   }
 
   return (
@@ -170,7 +221,12 @@ Visit us today and save big!`)
                   <CardContent className="space-y-3">
                     <div>
                       <label className="text-sm font-medium mb-1 block">Image Description</label>
-                      <Textarea placeholder="Describe the image you want to create..." rows={3} />
+                      <Textarea
+                        placeholder="Describe the image you want to create..."
+                        rows={3}
+                        value={imagePrompt}
+                        onChange={(e) => setImagePrompt(e.target.value)}
+                      />
                     </div>
                     <div className="grid grid-cols-2 gap-2">
                       <div>
@@ -194,7 +250,7 @@ Visit us today and save big!`)
                     </div>
                     <Button
                       onClick={handleGenerateImage}
-                      disabled={isGeneratingImage}
+                      disabled={isGeneratingImage || !imagePrompt}
                       className="w-full bg-gradient-to-r from-purple-600 to-pink-600"
                     >
                       {isGeneratingImage ? (
@@ -209,6 +265,22 @@ Visit us today and save big!`)
                         </>
                       )}
                     </Button>
+
+                    {generatedImageUrl && (
+                      <div className="mt-4">
+                        <label className="text-sm font-medium mb-1 block">Generated Image</label>
+                        <div className="border rounded-lg overflow-hidden">
+                          <img
+                            src={generatedImageUrl || "/placeholder.svg"}
+                            alt="Generated image"
+                            className="w-full h-32 object-cover"
+                          />
+                        </div>
+                        <Button size="sm" className="mt-2 w-full bg-transparent" variant="outline">
+                          Add to Design
+                        </Button>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               </TabsContent>
