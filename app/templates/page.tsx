@@ -90,12 +90,16 @@ export default function TemplatesPage() {
             <Link href="/pricing" className="text-gray-600 hover:text-purple-600 transition-colors">
               Pricing
             </Link>
-            <Button variant="outline" size="sm">
-              Sign In
-            </Button>
-            <Button size="sm" className="bg-gradient-to-r from-purple-600 to-pink-600">
-              Get Started
-            </Button>
+            <Link href="/auth/signin">
+              <Button variant="outline" size="sm">
+                Sign In
+              </Button>
+            </Link>
+            <Link href="/auth/signup">
+              <Button size="sm" className="bg-gradient-to-r from-purple-600 to-pink-600">
+                Get Started
+              </Button>
+            </Link>
           </nav>
         </div>
       </header>
@@ -140,37 +144,37 @@ export default function TemplatesPage() {
         {/* Templates Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {templates.map((template) => (
-            <Card key={template.id} className="group hover:shadow-lg transition-all duration-300 cursor-pointer">
-              <CardContent className="p-0">
-                <div className="relative">
-                  <img
-                    src={template.image || "/placeholder.svg"}
-                    alt={template.title}
-                    className="w-full h-64 object-cover rounded-t-lg"
-                  />
-                  {template.popular && (
-                    <Badge className="absolute top-3 left-3 bg-orange-500 hover:bg-orange-600">
-                      <Star className="w-3 h-3 mr-1" />
-                      Popular
-                    </Badge>
-                  )}
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors rounded-t-lg flex items-center justify-center">
-                    <Link href={`/editor?template=${template.id}`}>
+            <Link key={template.id} href={`/editor?template=${template.id}`}>
+              <Card className="group hover:shadow-lg transition-all duration-300 cursor-pointer">
+                <CardContent className="p-0">
+                  <div className="relative">
+                    <img
+                      src={template.image || "/placeholder.svg"}
+                      alt={template.title}
+                      className="w-full h-64 object-cover rounded-t-lg"
+                    />
+                    {template.popular && (
+                      <Badge className="absolute top-3 left-3 bg-orange-500 hover:bg-orange-600">
+                        <Star className="w-3 h-3 mr-1" />
+                        Popular
+                      </Badge>
+                    )}
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors rounded-t-lg flex items-center justify-center">
                       <Button className="opacity-0 group-hover:opacity-100 transition-opacity bg-white text-purple-600 hover:bg-gray-100">
                         Use Template
                       </Button>
-                    </Link>
+                    </div>
                   </div>
-                </div>
-                <div className="p-4">
-                  <h3 className="font-semibold text-lg mb-1">{template.title}</h3>
-                  <p className="text-sm text-gray-600 mb-2">{template.description}</p>
-                  <Badge variant="secondary" className="text-xs">
-                    {template.category}
-                  </Badge>
-                </div>
-              </CardContent>
-            </Card>
+                  <div className="p-4">
+                    <h3 className="font-semibold text-lg mb-1">{template.title}</h3>
+                    <p className="text-sm text-gray-600 mb-2">{template.description}</p>
+                    <Badge variant="secondary" className="text-xs">
+                      {template.category}
+                    </Badge>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
           ))}
         </div>
 

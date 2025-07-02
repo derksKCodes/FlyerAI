@@ -101,12 +101,16 @@ export default function PricingPage() {
             <Link href="/pricing" className="text-purple-600 font-medium">
               Pricing
             </Link>
-            <Button variant="outline" size="sm">
-              Sign In
-            </Button>
-            <Button size="sm" className="bg-gradient-to-r from-purple-600 to-pink-600">
-              Get Started
-            </Button>
+            <Link href="/auth/signin">
+              <Button variant="outline" size="sm">
+                Sign In
+              </Button>
+            </Link>
+            <Link href="/auth/signup">
+              <Button size="sm" className="bg-gradient-to-r from-purple-600 to-pink-600">
+                Get Started
+              </Button>
+            </Link>
           </nav>
         </div>
       </header>
@@ -162,16 +166,28 @@ export default function PricingPage() {
                   ))}
                 </ul>
 
-                <Button
-                  className={`w-full ${
-                    plan.popular
-                      ? "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-                      : "bg-gray-900 hover:bg-gray-800"
-                  }`}
-                  size="lg"
-                >
-                  {plan.cta}
-                </Button>
+                {plan.name === "Pay Per Design" ? (
+                  <Link href="/editor">
+                    <Button className="w-full bg-gray-900 hover:bg-gray-800" size="lg">
+                      {plan.cta}
+                    </Button>
+                  </Link>
+                ) : plan.name === "Business" ? (
+                  <Link href="/contact">
+                    <Button className="w-full bg-gray-900 hover:bg-gray-800" size="lg">
+                      {plan.cta}
+                    </Button>
+                  </Link>
+                ) : (
+                  <Link href={`/checkout?plan=${plan.name.toLowerCase().replace(" ", "")}`}>
+                    <Button
+                      className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                      size="lg"
+                    >
+                      {plan.cta}
+                    </Button>
+                  </Link>
+                )}
               </CardContent>
             </Card>
           ))}
@@ -239,19 +255,21 @@ export default function PricingPage() {
             Join thousands of hustlers already growing their business with FlyerAI
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/editor">
+            <Link href="/auth/signup">
               <Button size="lg" className="bg-white text-purple-600 hover:bg-gray-100">
                 <Zap className="w-5 h-5 mr-2" />
                 Start Creating Free
               </Button>
             </Link>
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-white text-white hover:bg-white hover:text-purple-600 bg-transparent"
-            >
-              View Templates
-            </Button>
+            <Link href="/templates">
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-white text-white hover:bg-white hover:text-purple-600 bg-transparent"
+              >
+                View Templates
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

@@ -18,6 +18,7 @@ export default function EditorPage() {
   const [generatedText, setGeneratedText] = useState("")
   const [imagePrompt, setImagePrompt] = useState("")
   const [generatedImageUrl, setGeneratedImageUrl] = useState("")
+  const [isSaved, setIsSaved] = useState(false)
 
   const handleGenerateText = async () => {
     if (!businessType || !promotion) return
@@ -95,6 +96,59 @@ Contact us today!`)
     }
   }
 
+  const handleSave = () => {
+    setIsSaved(true)
+    setTimeout(() => setIsSaved(false), 2000)
+  }
+
+  const handleDownload = () => {
+    // Create a simple download simulation
+    const canvas = document.createElement("canvas")
+    canvas.width = 400
+    canvas.height = 600
+    const ctx = canvas.getContext("2d")
+
+    if (ctx) {
+      // Create a simple flier design
+      ctx.fillStyle = "#f3e8ff"
+      ctx.fillRect(0, 0, 400, 600)
+
+      ctx.fillStyle = "#7c3aed"
+      ctx.font = "bold 24px Arial"
+      ctx.textAlign = "center"
+      ctx.fillText("Your Flier Design", 200, 100)
+
+      if (generatedText) {
+        ctx.fillStyle = "#374151"
+        ctx.font = "16px Arial"
+        const lines = generatedText.split("\n")
+        lines.forEach((line, index) => {
+          ctx.fillText(line, 200, 150 + index * 25)
+        })
+      }
+
+      // Download the canvas as image
+      const link = document.createElement("a")
+      link.download = "flyerai-design.png"
+      link.href = canvas.toDataURL()
+      link.click()
+    }
+  }
+
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: "My FlyerAI Design",
+        text: "Check out my awesome flier created with FlyerAI!",
+        url: window.location.href,
+      })
+    } else {
+      // Fallback: copy link to clipboard
+      navigator.clipboard.writeText(window.location.href)
+      alert("Link copied to clipboard!")
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -111,22 +165,22 @@ Contact us today!`)
 
           {/* Editor Tools */}
           <div className="flex items-center space-x-2">
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" title="Undo">
               <Undo className="w-4 h-4" />
             </Button>
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" title="Redo">
               <Redo className="w-4 h-4" />
             </Button>
             <div className="w-px h-6 bg-gray-300 mx-2" />
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" onClick={handleSave}>
               <Save className="w-4 h-4 mr-1" />
-              Save
+              {isSaved ? "Saved!" : "Save"}
             </Button>
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" onClick={handleShare}>
               <Share className="w-4 h-4 mr-1" />
               Share
             </Button>
-            <Button className="bg-gradient-to-r from-purple-600 to-pink-600">
+            <Button className="bg-gradient-to-r from-purple-600 to-pink-600" onClick={handleDownload}>
               <Download className="w-4 h-4 mr-1" />
               Download
             </Button>
@@ -290,9 +344,23 @@ Contact us today!`)
             <div className="mt-6">
               <h3 className="text-sm font-semibold mb-3">Quick Start Templates</h3>
               <div className="grid grid-cols-2 gap-2">
-                {["Sale", "Event", "Menu", "Service"].map((template) => (
-                  <Button key={template} variant="outline" size="sm" className="text-xs bg-transparent">
-                    {template}
+                {[
+                  { name: "Sale", business: "Retail Store", promo: "50% off everything" },
+                  { name: "Event", business: "Event Venue", promo: "Grand Opening" },
+                  { name: "Menu", business: "Restaurant", promo: "New menu items" },
+                  { name: "Service", business: "Salon", promo: "Professional services" },
+                ].map((template) => (
+                  <Button
+                    key={template.name}
+                    variant="outline"
+                    size="sm"
+                    className="text-xs bg-transparent"
+                    onClick={() => {
+                      setBusinessType(template.business)
+                      setPromotion(template.promo)
+                    }}
+                  >
+                    {template.name}
                   </Button>
                 ))}
               </div>
@@ -305,24 +373,33 @@ Contact us today!`)
           <div className="bg-white shadow-lg rounded-lg overflow-hidden" style={{ width: "400px", height: "600px" }}>
             {/* Canvas Preview */}
             <div className="w-full h-full bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center relative">
-              <div className="text-center p-8">
-                <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Sparkles className="w-8 h-8 text-white" />
+              {generatedText || generatedImageUrl ? (
+                <div className="p-6 text-center">
+                  {generatedImageUrl && (
+                    <img
+                      src={generatedImageUrl || "/placeholder.svg"}
+                      alt="Generated"
+                      className="w-full h-32 object-cover rounded-lg mb-4"
+                    />
+                  )}
+                  {generatedText && (
+                    <div className="bg-white/90 backdrop-blur-sm rounded-lg p-4">
+                      <pre className="text-sm whitespace-pre-wrap text-gray-800">{generatedText}</pre>
+                    </div>
+                  )}
                 </div>
-                <h2 className="text-2xl font-bold text-gray-800 mb-2">Your Design Here</h2>
-                <p className="text-gray-600 text-sm mb-4">
-                  Use the AI tools on the left to generate content, then drag and drop elements to create your flier.
-                </p>
-                <Badge className="bg-purple-100 text-purple-700">Ready to Design</Badge>
-              </div>
-
-              {/* Sample elements that would be draggable */}
-              <div className="absolute top-4 left-4 right-4">
-                <div className="bg-white/80 backdrop-blur-sm rounded-lg p-3 text-center">
-                  <h3 className="font-bold text-lg">MEGA SALE!</h3>
-                  <p className="text-sm text-gray-600">Up to 50% Off Everything</p>
+              ) : (
+                <div className="text-center p-8">
+                  <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Sparkles className="w-8 h-8 text-white" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-gray-800 mb-2">Your Design Here</h2>
+                  <p className="text-gray-600 text-sm mb-4">
+                    Use the AI tools on the left to generate content, then drag and drop elements to create your flier.
+                  </p>
+                  <Badge className="bg-purple-100 text-purple-700">Ready to Design</Badge>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>

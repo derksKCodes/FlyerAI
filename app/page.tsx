@@ -25,12 +25,16 @@ export default function HomePage() {
             <Link href="/pricing" className="text-gray-600 hover:text-purple-600 transition-colors">
               Pricing
             </Link>
-            <Button variant="outline" size="sm">
-              Sign In
-            </Button>
-            <Button size="sm" className="bg-gradient-to-r from-purple-600 to-pink-600">
-              Get Started
-            </Button>
+            <Link href="/auth/signin">
+              <Button variant="outline" size="sm">
+                Sign In
+              </Button>
+            </Link>
+            <Link href="/auth/signup">
+              <Button size="sm" className="bg-gradient-to-r from-purple-600 to-pink-600">
+                Get Started
+              </Button>
+            </Link>
           </nav>
         </div>
       </header>
@@ -50,7 +54,7 @@ export default function HomePage() {
             your business. Perfect for hustlers and small businesses.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <Link href="/editor">
+            <Link href="/auth/signup">
               <Button size="lg" className="bg-gradient-to-r from-purple-600 to-pink-600 text-lg px-8 py-3">
                 <Zap className="w-5 h-5 mr-2" />
                 Start Creating Free
@@ -170,7 +174,7 @@ export default function HomePage() {
           <p className="text-xl text-purple-100 mb-8">
             Join thousands of hustlers and small businesses already using FlyerAI to grow their sales
           </p>
-          <Link href="/editor">
+          <Link href="/auth/signup">
             <Button size="lg" className="bg-white text-purple-600 hover:bg-gray-100 text-lg px-8 py-3">
               <Zap className="w-5 h-5 mr-2" />
               Start Creating Now - It's Free!
