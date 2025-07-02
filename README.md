@@ -1,6 +1,3 @@
-<div align="center">
-  <img src="https://via.placeholder.com/120x120/6366f1/ffffff?text=🎨" alt="FlyerAI Logo" width="120" height="120">
-  
   # FlyerAI - AI-Powered Poster Maker
   
   **Create stunning fliers in minutes with the power of AI - AI-powered poster maker that helps users generate beautiful fliers (with templates, AI  text, images).**
